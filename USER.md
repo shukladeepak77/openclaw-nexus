@@ -16,6 +16,7 @@ _Learn about the person you're helping. Update this as you go._
 - Wants gentle challenge when assumptions are incorrect.
 - Priorities for help: Jyotish guidance, life decisions, and inner clarity.
 - Prefers actionable guidance, not just philosophy.
+- Expects independent fetching/generation of requested details, with results matching any provided reference URL rather than simply echoing the URL.
 - Has interest in jyotish guidance.
 
 ---
