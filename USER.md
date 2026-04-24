@@ -18,6 +18,7 @@ _Learn about the person you're helping. Update this as you go._
 - Prefers actionable guidance, not just philosophy.
 - Expects independent fetching/generation of requested details, with results matching the expected reference style rather than simply echoing a provided URL.
 - Will usually provide Jyotish inputs as: date of birth, time, and place of birth.
+- When full birth details are provided, prefers a well-designed PDF report with the Janm Kundli chart at the top and the related details below it.
 - Has interest in jyotish guidance.
 
 ---
