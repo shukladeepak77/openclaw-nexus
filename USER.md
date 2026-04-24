@@ -6,11 +6,12 @@ _Learn about the person you're helping. Update this as you go._
 - **What to call them:** Deepak
 - **Pronouns:** _(optional)_
 - **Timezone:**
-- **Notes:** Bootstrap started on April 24, 2026. Interested in jyotish guidance.
+- **Notes:** Bootstrap started on April 24, 2026. Interested in jyotish guidance. Values truth, spiritual depth, clarity, and practical real-life guidance.
 
 ## Context
 
-_(What do they care about? What projects are they working on? What annoys them? What makes them laugh? Build this over time.)_
+- Values truth, spiritual depth, clarity, and practical guidance that helps in real life.
+- Has interest in jyotish guidance.
 
 ---
 
