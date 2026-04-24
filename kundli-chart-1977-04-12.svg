@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <style>
+      .title { font: 700 30px 'Arial', sans-serif; fill: #1f2937; }
+      .subtitle { font: 500 17px 'Arial', sans-serif; fill: #4b5563; }
+      .label { font: 700 20px 'Arial', sans-serif; fill: #111827; }
+      .house { font: 600 14px 'Arial', sans-serif; fill: #6b7280; }
+      .text { font: 600 18px 'Arial', sans-serif; fill: #111827; }
+      .small { font: 500 14px 'Arial', sans-serif; fill: #374151; }
+      .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 2; }
+      .chartline { stroke: #0f172a; stroke-width: 2.4; fill: none; }
+      .card { fill: #f8fafc; stroke: #e2e8f0; stroke-width: 2; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" fill="#f8fafc" />
+  <text x="700" y="55" text-anchor="middle" class="title">Kundli Chart</text>
+  <text x="700" y="88" text-anchor="middle" class="subtitle">12 April 1977 • 2:03 PM • Delhi, India • Lahiri / Chitra Paksha</text>
+
+  <rect x="55" y="120" width="610" height="700" rx="20" class="card"/>
+  <rect x="735" y="120" width="610" height="700" rx="20" class="card"/>
+
+  <text x="360" y="165" text-anchor="middle" class="label">Rashi Chart (D1)</text>
+  <text x="1040" y="165" text-anchor="middle" class="label">Navamsha Chart (D9)</text>
+
+  <!-- D1 North Indian chart -->
+  <g transform="translate(90,190)">
+    <rect x="0" y="0" width="540" height="540" class="box"/>
+    <line x1="270" y1="0" x2="540" y2="270" class="chartline"/>
+    <line x1="540" y1="270" x2="270" y2="540" class="chartline"/>
+    <line x1="270" y1="540" x2="0" y2="270" class="chartline"/>
+    <line x1="0" y1="270" x2="270" y2="0" class="chartline"/>
+    <line x1="135" y1="135" x2="405" y2="135" class="chartline"/>
+    <line x1="405" y1="135" x2="405" y2="405" class="chartline"/>
+    <line x1="405" y1="405" x2="135" y2="405" class="chartline"/>
+    <line x1="135" y1="405" x2="135" y2="135" class="chartline"/>
+
+    <text x="270" y="290" text-anchor="middle" class="label">Cancer Lagna</text>
+    <text x="270" y="316" text-anchor="middle" class="small">Moon: Capricorn • Nakshatra: Shravana</text>
+
+    <!-- House texts -->
+    <text x="80" y="84" class="house">12</text>
+    <text x="165" y="78" class="text">Gemini</text>
+
+    <text x="247" y="40" class="house">1</text>
+    <text x="225" y="68" class="text">Cancer</text>
+    <text x="208" y="92" class="small">Lagna, Saturn</text>
+
+    <text x="430" y="84" class="house">2</text>
+    <text x="410" y="78" class="text">Leo</text>
+
+    <text x="485" y="250" class="house">3</text>
+    <text x="452" y="234" class="text">Virgo</text>
+
+    <text x="490" y="410" class="house">4</text>
+    <text x="454" y="392" class="text">Libra</text>
+    <text x="454" y="414" class="small">Rahu</text>
+
+    <text x="430" y="520" class="house">5</text>
+    <text x="395" y="500" class="text">Scorpio</text>
+
+    <text x="248" y="525" class="house">6</text>
+    <text x="205" y="500" class="text">Sagittarius</text>
+
+    <text x="78" y="520" class="house">7</text>
+    <text x="45" y="500" class="text">Capricorn</text>
+    <text x="45" y="522" class="small">Moon</text>
+
+    <text x="25" y="410" class="house">8</text>
+    <text x="8" y="392" class="text">Aquarius</text>
+    <text x="8" y="414" class="small">Mars</text>
+
+    <text x="20" y="250" class="house">9</text>
+    <text x="5" y="234" class="text">Pisces</text>
+    <text x="5" y="256" class="small">Sun, Venus</text>
+
+    <text x="73" y="160" class="house">10</text>
+    <text x="44" y="146" class="text">Aries</text>
+    <text x="44" y="168" class="small">Mercury, Ketu</text>
+
+    <text x="248" y="145" class="house">11</text>
+    <text x="210" y="145" class="text">Taurus</text>
+    <text x="210" y="167" class="small">Jupiter</text>
+  </g>
+
+  <!-- D9 North Indian chart -->
+  <g transform="translate(770,190)">
+    <rect x="0" y="0" width="540" height="540" class="box"/>
+    <line x1="270" y1="0" x2="540" y2="270" class="chartline"/>
+    <line x1="540" y1="270" x2="270" y2="540" class="chartline"/>
+    <line x1="270" y1="540" x2="0" y2="270" class="chartline"/>
+    <line x1="0" y1="270" x2="270" y2="0" class="chartline"/>
+    <line x1="135" y1="135" x2="405" y2="135" class="chartline"/>
+    <line x1="405" y1="135" x2="405" y2="405" class="chartline"/>
+    <line x1="405" y1="405" x2="135" y2="405" class="chartline"/>
+    <line x1="135" y1="405" x2="135" y2="135" class="chartline"/>
+
+    <text x="270" y="290" text-anchor="middle" class="label">Pisces Lagna</text>
+    <text x="270" y="316" text-anchor="middle" class="small">Navamsha focus on dharma & relationship</text>
+
+    <text x="80" y="84" class="house">12</text>
+    <text x="155" y="78" class="text">Aquarius</text>
+
+    <text x="247" y="40" class="house">1</text>
+    <text x="225" y="68" class="text">Pisces</text>
+    <text x="195" y="92" class="small">Lagna, Sun, Jupiter</text>
+
+    <text x="430" y="84" class="house">2</text>
+    <text x="412" y="78" class="text">Aries</text>
+    <text x="412" y="100" class="small">Ketu</text>
+
+    <text x="485" y="250" class="house">3</text>
+    <text x="445" y="234" class="text">Taurus</text>
+    <text x="445" y="256" class="small">Mars</text>
+
+    <text x="490" y="410" class="house">4</text>
+    <text x="448" y="392" class="text">Gemini</text>
+    <text x="448" y="414" class="small">Moon</text>
+
+    <text x="430" y="520" class="house">5</text>
+    <text x="398" y="500" class="text">Cancer</text>
+
+    <text x="248" y="525" class="house">6</text>
+    <text x="220" y="500" class="text">Leo</text>
+
+    <text x="78" y="520" class="house">7</text>
+    <text x="40" y="500" class="text">Virgo</text>
+    <text x="40" y="522" class="small">Mercury</text>
+
+    <text x="25" y="410" class="house">8</text>
+    <text x="10" y="392" class="text">Libra</text>
+    <text x="10" y="414" class="small">Rahu</text>
+
+    <text x="20" y="250" class="house">9</text>
+    <text x="0" y="234" class="text">Scorpio</text>
+    <text x="0" y="256" class="small">Saturn</text>
+
+    <text x="73" y="160" class="house">10</text>
+    <text x="18" y="146" class="text">Sagittarius</text>
+    <text x="18" y="168" class="small">Venus</text>
+
+    <text x="248" y="145" class="house">11</text>
+    <text x="205" y="145" class="text">Capricorn</text>
+  </g>
+
+  <text x="700" y="805" text-anchor="middle" class="subtitle">Generated for Deepak • If you want, I can also make a South Indian style chart or a PNG version next.</text>
+</svg>
