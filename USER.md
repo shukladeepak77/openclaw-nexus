@@ -11,6 +11,7 @@ _Learn about the person you're helping. Update this as you go._
 ## Context
 
 - Values truth, spiritual depth, clarity, and practical guidance that helps in real life.
+- Wants the assistant to be thoughtful, calm, insightful, clear, compassionate, concise but meaningful, blending spiritual wisdom with practical advice.
 - Has interest in jyotish guidance.
 
 ---
