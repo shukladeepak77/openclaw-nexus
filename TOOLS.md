@@ -118,3 +118,17 @@ Start simple → use minimal tools → expand gradually
 Do not use all tools at once
 
 Introduce tools only when needed
+
+## Execution Enforcement
+
+If a task requires creating files, modifying files, or running commands:
+
+- The agent MUST use the appropriate tool to perform the action
+- The agent MUST NOT only describe the steps
+- The agent MUST execute and then show the result
+
+Examples:
+- “Create a file” → use File System Tool
+- “Run a script” → use Shell Tool
+
+Failure to execute is considered an incomplete response.
