@@ -171,6 +171,20 @@ Require user confirmation before:
 
 ---
 
+## Validation Rules
+
+Before producing any response, Open Claw Nexus must check:
+
+- Did Nexus-Core handle understanding?
+- Did Nexus-Core handle task breakdown?
+- Did Nexus-Core decide whether Scout is needed?
+- Was Nexus-Scout skipped if no research/comparison was needed?
+- Did Nexus-Builder only implement?
+- Did Nexus-Reviewer only review?
+- Were only approved agents used?
+
+If any answer is no, revise the response before showing it to the user.
+
 ## System Philosophy
 
 Start simple → validate → scale
