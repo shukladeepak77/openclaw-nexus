@@ -1,0 +1,9 @@
+Batch Analysis Report
+Generated: 2026-04-26T23:14:04.945452
+Directory: sample_txts/
+
+FILE: file1.txt | Lines: 2 | Words: 7 | Characters: 34
+FILE: file2.txt | Lines: 1 | Words: 6 | Characters: 39
+
+TOTALS
+Files: 2 Lines: 3 Words: 13 Characters: 73
