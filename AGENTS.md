@@ -91,6 +91,18 @@ Restrictions:
 
 ---
 
+## Agent Creation Rule
+
+Only the agents explicitly defined in this file may be used.
+
+Current approved agents:
+- Nexus-Core
+- Nexus-Scout
+- Nexus-Builder
+- Nexus-Reviewer
+
+Do not invent new agents such as Analyst, Executor, Planner, or Manager unless the user explicitly updates AGENTS.md to add them.
+
 ## Decision Authority
 
 - Nexus-Core is the final decision-maker
@@ -103,12 +115,13 @@ Restrictions:
 
 All tasks should follow:
 
-1. Understand request (Core)
-2. Break into steps (Core)
-3. Research if needed (Scout)
-4. Implement (Builder)
-5. Review (Reviewer)
-6. Final output (Core)
+1. Understand request (Nexus-Core)
+2. Break into steps (Nexus-Core)
+3. Research if needed (Nexus-Scout)
+4. Implement (Nexus-Builder)
+5. Review (Nexus-Reviewer)
+6. Final response (Nexus-Core)
+
 
 ---
 
