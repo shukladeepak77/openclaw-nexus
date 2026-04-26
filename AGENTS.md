@@ -113,15 +113,19 @@ Do not invent new agents such as Analyst, Executor, Planner, or Manager unless t
 
 ## Workflow
 
-All tasks should follow:
+All tasks must follow this order:
 
-1. Understand request (Nexus-Core)
-2. Break into steps (Nexus-Core)
-3. Research if needed (Nexus-Scout)
-4. Implement (Nexus-Builder)
-5. Review (Nexus-Reviewer)
-6. Final response (Nexus-Core)
+1. Nexus-Core understands the user request.
+2. Nexus-Core breaks the request into clear steps.
+3. Nexus-Core decides whether Nexus-Scout is needed.
+4. Nexus-Scout is used only when research, comparison, or information gathering is required.
+5. Nexus-Builder implements the solution.
+6. Nexus-Reviewer reviews the output.
+7. Nexus-Core produces the final response.
 
+Nexus-Scout must not own task understanding, planning, or final decisions.
+Nexus-Builder must not own architecture decisions.
+Nexus-Reviewer must not create new features unless reviewing or fixing.
 
 ---
 
