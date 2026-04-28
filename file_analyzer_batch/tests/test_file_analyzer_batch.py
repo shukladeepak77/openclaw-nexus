@@ -1,34 +1,40 @@
 import unittest
 import subprocess
-import os
+import sys
+from pathlib import Path
 
-SCRIPT = "/home/shukla_deepak77/.openclaw/workspace/file_analyzer_batch/batch_analyzer.py"
+# Build paths relative to this test file (works both locally and in CI)
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = ROOT / "batch_analyzer.py"
 
 class TestBatchAnalyzer(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        cls.base = base
-        cls.input_dir = os.path.join(base, "test_data", "input")
-        cls.output_dir = os.path.join(base, "test_data", "output")
-        cls.input_empty = os.path.join(base, "test_data", "input_empty")
-        os.makedirs(cls.input_dir, exist_ok=True)
-        os.makedirs(cls.output_dir, exist_ok=True)
-        os.makedirs(cls.input_empty, exist_ok=True)
+        # Use ROOT as the base for all test data
+        cls.base = ROOT
+        cls.input_dir = cls.base / "test_data" / "input"
+        cls.output_dir = cls.base / "test_data" / "output"
+        cls.input_empty = cls.base / "test_data" / "input_empty"
+        cls.input_dir.mkdir(parents=True, exist_ok=True)
+        cls.output_dir.mkdir(parents=True, exist_ok=True)
+        cls.input_empty.mkdir(parents=True, exist_ok=True)
 
         cls.SCRIPT = SCRIPT
 
     def run_batch(self, input_dir, output_report):
-        return subprocess.run(["python3", self.SCRIPT, input_dir, output_report], capture_output=True, text=True)
+        # Ensure both input and output directories exist before running
+        Path(input_dir).mkdir(parents=True, exist_ok=True)
+        Path(output_report).parent.mkdir(parents=True, exist_ok=True)
+        return subprocess.run([sys.executable, str(self.SCRIPT), str(input_dir), str(output_report)], capture_output=True, text=True)
 
     def test_two_txt_files_counts(self):
-        f1 = os.path.join(self.input_dir, "file1.txt")
-        f2 = os.path.join(self.input_dir, "file2.txt")
+        f1 = self.input_dir / "file1.txt"
+        f2 = self.input_dir / "file2.txt"
         content1 = "Hello batch\nThis is a batch file.\n"
         content2 = "Another sample text file for analysis.\n"
-        with open(f1, "w", encoding="utf-8") as fh: fh.write(content1)
-        with open(f2, "w", encoding="utf-8") as fh: fh.write(content2)
-        output_report = os.path.join(self.output_dir, "summary.txt")
+        f1.write_text(content1, encoding="utf-8")
+        f2.write_text(content2, encoding="utf-8")
+        output_report = self.output_dir / "summary.txt"
         res = self.run_batch(self.input_dir, output_report)
         self.assertEqual(res.returncode, 0)
         with open(output_report, "r", encoding="utf-8") as f:
@@ -48,7 +54,7 @@ class TestBatchAnalyzer(unittest.TestCase):
         self.assertIn(f"Files: 2 Lines: {total_lines} Words: {total_words} Characters: {total_chars}", summary)
 
     def test_no_txt_files(self):
-        output_report = os.path.join(self.output_dir, "empty_summary.txt")
+        output_report = self.output_dir / "empty_summary.txt"
         res = self.run_batch(self.input_empty, output_report)
         self.assertIn(res.returncode, (0,))
         with open(output_report, "r", encoding="utf-8") as f:
