@@ -1,1 +1,20 @@
 .openclaw/
+cat >> .gitignore <<'EOF'
+
+# Python
+__pycache__/
+*.pyc
+
+# Generated reports / logs
+*_report.txt
+my_report.txt
+*.log
+
+# Test output
+test_data/output/
+
+# OS temp
+.DS_Store
+EOF
+
+
