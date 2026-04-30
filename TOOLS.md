@@ -1,12 +1,18 @@
-# TOOLS.md — Open Claw Nexus Tool System
+# TOOLS.md — Open Claw Virtual Company Tool System
 
 ## Overview
 
-Tools define what each agent is allowed to do.
+This file defines **tool access and permissions** for each role in the Open Claw Virtual Company.
 
-Each agent must use only the tools assigned to it.
+Tools represent **real execution capabilities** such as:
+- creating files
+- running shell commands
+- managing Git
+- interacting with CI/CD systems
 
-No agent should use tools outside its scope.
+Each role has **strictly controlled access**.
+
+No role should use tools outside its allowed scope.
 
 ---
 
@@ -15,120 +21,205 @@ No agent should use tools outside its scope.
 ### 1. File System Tool
 
 Capabilities:
-- Read files
-- Write files
 - Create files
 - Modify files
+- Read files
+- Create directories
 
-Allowed Agents:
-- Nexus-Builder
-- Nexus-Reviewer
-
-Restrictions:
-- Must not overwrite important files without confirmation
+Used for:
+- Writing code
+- Creating project structure
+- Updating configuration files
 
 ---
 
-### 2. Shell / Command Tool
+### 2. Shell Tool
 
 Capabilities:
-- Run shell commands
+- Run terminal commands
 - Execute scripts
-- Run programs
+- Run tests
+- Install dependencies
 
-Allowed Agents:
-- Nexus-Builder
-
-Restrictions:
-- Must not run destructive commands
-- Must ask for user confirmation before risky operations
-
-Examples of restricted commands:
-- rm
-- chmod
-- sudo operations
+Used for:
+- Running Python scripts
+- Running unittest / pytest
+- Executing build commands
 
 ---
 
-### 3. Research / Search Tool
+### 3. Git Tool
 
 Capabilities:
-- Search for information
-- Retrieve documentation
-- Compare tools and technologies
+- git add
+- git commit
+- git push
+- git pull
+- git status
 
-Allowed Agents:
-- Nexus-Scout
-
-Restrictions:
-- Must only be used when explicitly required by Nexus-Core
+Used for:
+- Version control
+- Committing changes
+- Syncing with remote repository
 
 ---
 
-### 4. Code Generation Tool
+### 4. CI/CD Tool (GitHub Actions)
 
 Capabilities:
-- Generate code
-- Modify code
-- Suggest improvements
+- Create/update workflow files
+- Trigger CI pipelines (via push)
+- Validate builds through CI
 
-Allowed Agents:
-- Nexus-Builder
+Used for:
+- Automating tests
+- Ensuring code quality
+- Running pipelines on push/PR
 
 ---
 
-### 5. Review / Analysis Tool
+### 5. Analysis / Review Tool
 
 Capabilities:
 - Analyze code
-- Detect issues
+- Validate logic
+- Identify bugs
 - Suggest improvements
 
-Allowed Agents:
-- Nexus-Reviewer
+Used for:
+- QA validation
+- Code review
+- Test validation
 
 ---
 
-## Tool Usage Rules
+## Tool Access by Role
 
-- Agents must only use tools assigned to them
-- Nexus-Core does NOT directly use tools
-- Nexus-Core only delegates
-- All risky actions require user approval
-- Prefer safe and minimal operations
+### Manager
 
----
+Tools: NONE
 
-## Safety Enforcement
+Responsibilities:
+- Planning only
+- Delegation only
 
-Before using any tool, agents must check:
-
-- Is this tool allowed for me?
-- Is this action safe?
-- Do I need user confirmation?
-
-If unsure → ask the user
+Restrictions:
+- Must NOT create files
+- Must NOT run commands
+- Must NOT modify code
 
 ---
 
-## System Philosophy for Tools
+### Researcher
 
-Start simple → use minimal tools → expand gradually
+Tools:
+- Analysis / Review Tool (read-only usage)
 
-Do not use all tools at once
+Responsibilities:
+- Research and comparison
 
-Introduce tools only when needed
+Restrictions:
+- Must NOT create files
+- Must NOT run shell commands
+- Must NOT modify system state
 
-## Execution Enforcement
+---
 
-If a task requires creating files, modifying files, or running commands:
+### Developer
 
-- The agent MUST use the appropriate tool to perform the action
-- The agent MUST NOT only describe the steps
-- The agent MUST execute and then show the result
+Tools:
+- File System Tool
 
-Examples:
-- “Create a file” → use File System Tool
-- “Run a script” → use Shell Tool
+Responsibilities:
+- Create and modify code
+- Build project structure
 
-Failure to execute is considered an incomplete response.
+Restrictions:
+- Must NOT run shell commands unless explicitly required
+- Must NOT perform Git operations
+
+---
+
+### QA (Reviewer)
+
+Tools:
+- Analysis / Review Tool
+- Shell Tool (for running tests only)
+
+Responsibilities:
+- Validate outputs
+- Run tests
+- Check correctness
+
+Restrictions:
+- Must NOT create new features from scratch
+- Must NOT perform Git operations
+
+---
+
+### DevOps
+
+Tools:
+- Shell Tool
+- Git Tool
+- CI/CD Tool
+
+Responsibilities:
+- Execute commands
+- Run scripts
+- Manage Git operations
+- Handle CI/CD workflows
+
+Restrictions:
+- Must NOT change application logic
+- Must NOT create business features
+
+---
+
+## Execution Rules
+
+- Developer creates files
+- QA validates outputs
+- DevOps executes commands and manages Git
+
+Tools must be used **only by the appropriate role**.
+
+---
+
+## Safety Rules
+
+The following actions REQUIRE explicit user confirmation:
+
+- Deleting files or directories
+- Overwriting critical files
+- Running destructive shell commands
+- Deploying to external systems
+- Pushing to production branches
+- Exposing secrets or credentials
+
+---
+
+## Command Execution Guidelines
+
+- Prefer safe, minimal commands
+- Avoid chaining destructive commands
+- Always verify before execution
+- Provide command output in logs
+
+---
+
+## Logging Requirements
+
+Whenever a tool is used, the system must log:
+
+- Tool name
+- Action performed
+- Target (file, command, repo, etc.)
+- Result/output
+
+Example:
+
+```text
+DevOps:
+- Shell Tool → python3 -m unittest
+- Result → All tests passed

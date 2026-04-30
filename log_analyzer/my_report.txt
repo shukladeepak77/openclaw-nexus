@@ -1,0 +1,14 @@
+Log Analysis Report
+==================
+
+Counts by level:
+ERROR: 2
+WARNING: 2
+INFO: 5
+
+Top messages:
+3x - User login successful
+2x - Disk space low on /dev/sda1
+2x - Failed to connect to database
+1x - Data export started
+1x - Data export completed
