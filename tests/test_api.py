@@ -25,3 +25,9 @@ def test_analyze_upload_basic():
     assert "INFO: User login" in top
     assert "ERROR: invalid password" in top
     assert len(top) <= 3
+    # Health metrics
+    assert data["total_lines"] == 5
+    assert data["error_count"] == 2
+    assert data["warning_count"] == 0
+    assert data["risk_level"] == "LOW"
+    assert isinstance(data["suggestions"], list)
