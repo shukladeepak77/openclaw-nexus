@@ -6,16 +6,19 @@ import subprocess
 
 def help_text() -> str:
     return (
-        "Available commands: check disk, check memory, check uptime, check ports, analyze logs, help"
+        "Commands:\n"
+        "  check disk | check memory | check cpu | check uptime | check ports\n"
+        "  top processes | system health | analyze logs: <content>\n"
+        "  show alerts | list runbooks | run <runbook> | confirm <runbook> | cancel\n"
+        "  run tests | config | help"
     )
 
 
-def check_disk():
-    # Real disk usage using shutil
+def check_disk() -> dict:
     usage = shutil.disk_usage("/")
-    total_gb = usage.total / (1024**3)
-    used_gb = usage.used / (1024**3)
-    free_gb = usage.free / (1024**3)
+    total_gb = usage.total / (1024 ** 3)
+    used_gb = usage.used / (1024 ** 3)
+    free_gb = usage.free / (1024 ** 3)
     percent_used = (usage.used / usage.total) * 100 if usage.total else 0
     return {
         "total_gb": round(total_gb, 2),
@@ -41,16 +44,14 @@ def _read_meminfo():
     return mem
 
 
-def check_memory():
+def check_memory() -> dict:
     mem = _read_meminfo()
     total_kb = mem.get("MemTotal_kB", 0)
-    avail_kb = mem.get("MemAvailable_kB")
-    if avail_kb is None:
-        avail_kb = mem.get("MemFree_kB", 0)
+    avail_kb = mem.get("MemAvailable_kB") or mem.get("MemFree_kB", 0)
     used_kb = max(total_kb - avail_kb, 0)
     total_mb = int(total_kb / 1024)
     used_mb = int(used_kb / 1024)
-    available_mb = int(avail_kb / 1024) if avail_kb else 0
+    available_mb = int(avail_kb / 1024)
     percent_used = (used_kb / total_kb) * 100 if total_kb else 0
     return {
         "total_mb": total_mb,
@@ -60,11 +61,42 @@ def check_memory():
     }
 
 
-def check_uptime():
+def check_cpu() -> dict:
+    try:
+        import psutil
+        percent = psutil.cpu_percent(interval=0.5)
+        count = psutil.cpu_count(logical=True)
+        return {"percent_used": round(percent, 2), "cpu_count": count}
+    except Exception:
+        return {"percent_used": 0.0, "cpu_count": 0}
+
+
+def check_processes(n: int = 5) -> list:
+    try:
+        import psutil
+        procs = []
+        for proc in psutil.process_iter(["pid", "name", "cpu_percent", "memory_percent", "status"]):
+            try:
+                info = proc.info
+                procs.append({
+                    "pid": info["pid"],
+                    "name": info.get("name") or "?",
+                    "cpu_pct": round(info.get("cpu_percent") or 0, 1),
+                    "mem_pct": round(info.get("memory_percent") or 0, 2),
+                    "status": info.get("status", "?"),
+                })
+            except Exception:
+                pass
+        procs.sort(key=lambda x: (x["cpu_pct"], x["mem_pct"]), reverse=True)
+        return procs[:n]
+    except Exception:
+        return []
+
+
+def check_uptime() -> dict:
     try:
         with open("/proc/uptime", "r") as f:
-            seconds_str = f.readline().split()[0]
-            seconds = float(seconds_str)
+            seconds = float(f.readline().split()[0])
     except Exception:
         seconds = 0.0
     days = int(seconds // 86400)
@@ -81,31 +113,28 @@ def check_uptime():
     }
 
 
-def check_ports():
+def check_ports() -> list:
     try:
         res = subprocess.run(["ss", "-tuln"], capture_output=True, text=True, timeout=3)
         if res.returncode != 0:
             return []
         ports = []
+        seen = set()
         for line in res.stdout.splitlines():
             for token in line.split():
                 if ":" in token:
                     port_s = token.rsplit(":", 1)[-1]
                     if port_s.isdigit():
-                        ports.append({"port": int(port_s), "service": "unknown"})
-        # unique ports
-        seen = set()
-        uniq = []
-        for p in ports:
-            if p["port"] not in seen:
-                seen.add(p["port"])
-                uniq.append(p)
-        return uniq
+                        p = int(port_s)
+                        if p not in seen:
+                            seen.add(p)
+                            ports.append({"port": p, "service": "unknown"})
+        return ports
     except Exception:
         return []
 
 
-def analyze_logs(logs: str):
+def analyze_logs(logs: str) -> dict:
     up = (logs or "").upper()
     errors = up.count("ERROR")
     warnings = up.count("WARNING")
@@ -138,9 +167,37 @@ def analyze_logs(logs: str):
         "suggested_actions": suggested_actions,
     }
 
-def alert_status(percent: float) -> str:
-    if percent >= 90:
+
+def run_tests() -> dict:
+    import subprocess
+    import sys
+    test_files = [
+        "tests/test_chatops_actions.py",
+        "tests/test_chatops_router.py",
+        "tests/test_chatops_db.py",
+        "tests/test_chatops_config.py",
+        "tests/test_chatops_runbooks.py",
+        "tests/test_chatops_api.py",
+    ]
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest"] + test_files + ["--tb=line", "-q", "--no-header"],
+            capture_output=True, text=True, timeout=180,
+        )
+        output = (result.stdout + result.stderr).strip()
+        lines = [l for l in output.splitlines() if l.strip()]
+        summary = "\n".join(lines[-10:] if len(lines) > 10 else lines)
+        status = "ALL PASSED" if result.returncode == 0 else "FAILURES DETECTED"
+        return {"response": f"Test Run — {status}\n\n{summary}", "status": status}
+    except subprocess.TimeoutExpired:
+        return {"response": "Tests timed out after 180 seconds.", "status": "TIMEOUT"}
+    except Exception as e:
+        return {"response": f"Error running tests: {e}", "status": "ERROR"}
+
+
+def alert_status(percent: float, warning: float = 80.0, critical: float = 90.0) -> str:
+    if percent >= critical:
         return "CRITICAL"
-    if percent >= 80:
+    if percent >= warning:
         return "WARNING"
     return "OK"

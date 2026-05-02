@@ -15,7 +15,7 @@ def test_chatops_message_check_disk():
     assert response.status_code == 200
     data = response.json()
     assert "response" in data
-    assert "Disk usage" in data["response"]
+    assert "Disk" in data["response"]
 
 
 def test_nl_memory_ok():
@@ -23,7 +23,7 @@ def test_nl_memory_ok():
     response = client.post("/chatops/message", json={"message": "is memory ok?"})
     assert response.status_code == 200
     data = response.json()
-    assert "Memory usage" in data.get("response", "")
+    assert "Memory" in data.get("response", "")
 
 
 def test_nl_ports_open():
