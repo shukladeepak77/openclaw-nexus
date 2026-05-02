@@ -137,3 +137,10 @@ def analyze_logs(logs: str):
         "impact": impact,
         "suggested_actions": suggested_actions,
     }
+
+def alert_status(percent: float) -> str:
+    if percent >= 90:
+        return "CRITICAL"
+    if percent >= 80:
+        return "WARNING"
+    return "OK"
