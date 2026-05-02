@@ -15,7 +15,6 @@ def route_message(message: str) -> Dict[str, str]:
     # Normalize input to a safe, lowercase string and strip punctuation
     s = (message or "").lower().strip()
     s = re.sub(r"[^a-z0-9\s]", "", s)
-    print("DEBUG NL:", s)
 
     # Help
     if not s or "help" in s:
@@ -36,7 +35,8 @@ def route_message(message: str) -> Dict[str, str]:
     # Uptime keywords
     if any(kw in s for kw in ["uptime", "running", "server running"]):
         data = check_uptime()
-        return {"response": f"Uptime: {data['uptime']}"}
+        uptime_str = f"{data.get('uptime_days', 0)}d {data.get('uptime_hours', 0)}h {data.get('uptime_minutes', 0)}m"
+        return {"response": f"Uptime: {uptime_str}"}
     # Ports keywords
     if any(kw in s for kw in ["port", "ports", "open ports"]):
         data = check_ports()
@@ -56,7 +56,8 @@ def route_message(message: str) -> Dict[str, str]:
         d = check_disk()
         m = check_memory()
         u = check_uptime()
-        resp = f"System Health: Disk {d['percent_used']}% used, Memory {m['percent_used']}% used, Uptime {u['uptime']}."
+        uptime_str = f"{u.get('uptime_days',0)}d {u.get('uptime_hours',0)}h {u.get('uptime_minutes',0)}m"
+        resp = f"System Health: Disk {d['percent_used']}% used, Memory {m['percent_used']}% used, Uptime {uptime_str}."
         return {"response": resp}
     # Fallback message
     return {"response": "I didn’t understand. Try: check disk, check memory, system health, analyze logs"}

@@ -1,3 +1,9 @@
+import shutil
+import os
+import re
+import subprocess
+
+
 def help_text() -> str:
     return (
         "Available commands: check disk, check memory, check uptime, check ports, analyze logs, help"
@@ -5,24 +11,98 @@ def help_text() -> str:
 
 
 def check_disk():
-    # Simple placeholder values
-    return {"total_gb": 500, "used_gb": 230, "percent_used": 46}
+    # Real disk usage using shutil
+    usage = shutil.disk_usage("/")
+    total_gb = usage.total / (1024**3)
+    used_gb = usage.used / (1024**3)
+    free_gb = usage.free / (1024**3)
+    percent_used = (usage.used / usage.total) * 100 if usage.total else 0
+    return {
+        "total_gb": round(total_gb, 2),
+        "used_gb": round(used_gb, 2),
+        "free_gb": round(free_gb, 2),
+        "percent_used": round(percent_used, 2),
+    }
+
+
+def _read_meminfo():
+    mem = {}
+    try:
+        with open("/proc/meminfo", "r") as f:
+            for line in f:
+                if line.startswith("MemTotal:"):
+                    mem["MemTotal_kB"] = int(line.split()[1])
+                elif line.startswith("MemAvailable:"):
+                    mem["MemAvailable_kB"] = int(line.split()[1])
+                elif line.startswith("MemFree:"):
+                    mem["MemFree_kB"] = int(line.split()[1])
+    except Exception:
+        pass
+    return mem
 
 
 def check_memory():
-    return {"total_mb": 32768, "used_mb": 10240, "percent_used": 31}
+    mem = _read_meminfo()
+    total_kb = mem.get("MemTotal_kB", 0)
+    avail_kb = mem.get("MemAvailable_kB")
+    if avail_kb is None:
+        avail_kb = mem.get("MemFree_kB", 0)
+    used_kb = max(total_kb - avail_kb, 0)
+    total_mb = int(total_kb / 1024)
+    used_mb = int(used_kb / 1024)
+    available_mb = int(avail_kb / 1024) if avail_kb else 0
+    percent_used = (used_kb / total_kb) * 100 if total_kb else 0
+    return {
+        "total_mb": total_mb,
+        "used_mb": used_mb,
+        "available_mb": available_mb,
+        "percent_used": round(percent_used, 2),
+    }
 
 
 def check_uptime():
-    return {"uptime": "3 days, 4 hours"}
+    try:
+        with open("/proc/uptime", "r") as f:
+            seconds_str = f.readline().split()[0]
+            seconds = float(seconds_str)
+    except Exception:
+        seconds = 0.0
+    days = int(seconds // 86400)
+    seconds -= days * 86400
+    hours = int(seconds // 3600)
+    seconds -= hours * 3600
+    minutes = int(seconds // 60)
+    seconds = int(seconds - minutes * 60)
+    return {
+        "uptime_days": days,
+        "uptime_hours": hours,
+        "uptime_minutes": minutes,
+        "uptime_seconds": seconds,
+    }
 
 
 def check_ports():
-    return [
-        {"port": 22, "service": "ssh", "open": True},
-        {"port": 80, "service": "http", "open": True},
-        {"port": 443, "service": "https", "open": True},
-    ]
+    try:
+        res = subprocess.run(["ss", "-tuln"], capture_output=True, text=True, timeout=3)
+        if res.returncode != 0:
+            return []
+        ports = []
+        for line in res.stdout.splitlines():
+            for token in line.split():
+                if ":" in token:
+                    port_s = token.rsplit(":", 1)[-1]
+                    if port_s.isdigit():
+                        ports.append({"port": int(port_s), "service": "unknown"})
+        # unique ports
+        seen = set()
+        uniq = []
+        for p in ports:
+            if p["port"] not in seen:
+                seen.add(p["port"])
+                uniq.append(p)
+        return uniq
+    except Exception:
+        return []
 
 
 def analyze_logs(logs: str):
@@ -57,4 +137,3 @@ def analyze_logs(logs: str):
         "impact": impact,
         "suggested_actions": suggested_actions,
     }
-
