@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ChatOps Console</title>
+    <style>
+      body { font-family: Inter, Arial, sans-serif; padding: 16px; background: #f7f8fb; }
+      #chat { border: 1px solid #e5e7eb; height: 420px; padding: 14px; overflow: auto; background: #fff; border-radius: 12px; }
+      .bubble { display: block; width: 70%; max-width: 70%; padding: 12px 14px; border-radius: 16px; margin: 8px 0; clear: both; box-sizing: border-box; border: 1px solid rgba(0,0,0,.05); }
+      .user { margin-left: auto; margin-right: 0; background: #1e90ff; color: white; }
+      .bot { margin-left: 0; margin-right: auto; background: #f3f4f6; color: #111; }
+      #input { width: 100%; padding: 12px; box-sizing: border-box; border: 1px solid #d1d5db; border-radius: 8px; }
+      #send { padding: 12px 16px; border-radius: 8px; border: none; background: #1e3a8a; color: white; font-weight: 600; cursor: pointer; }
+      #input-area { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+      #input-area input { flex: 1; }
+    </style>
+  </head>
+  <body>
+    <h2>ChatOps Console</h2>
+    <div id="chat"></div>
+    <div id="input-area">
+      <input id="input" type="text" placeholder="Type a command (e.g., 'check disk')" />
+      <button id="send">Send</button>
+    </div>
+
+    <script>
+      const chat = document.getElementById('chat');
+      const input = document.getElementById('input');
+      const btn = document.getElementById('send');
+
+      function addBubble(text, cls) {
+        const div = document.createElement('div');
+        div.className = 'bubble ' + cls;
+        div.textContent = text;
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const text = input.value.trim();
+        if (!text) return;
+        addBubble(text, 'user');
+        input.value = '';
+        const res = await fetch('/chatops/message', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        addBubble(data?.response || 'No response', 'bot');
+      }
+
+      btn.addEventListener('click', sendMessage);
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
+      // initial hint
+      addBubble('Welcome to ChatOps. Type a command and I will respond safely. Type help for options.', 'bot');
+    </script>
+  </body>
+  </html>

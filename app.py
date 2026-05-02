@@ -2,8 +2,39 @@ from fastapi import FastAPI, UploadFile, File
 import tempfile
 import os
 from log_analyzer.analyzer import LogAnalyzer
+from kundli.analyzer import KundliAnalyzer
+from incident.analyzer import IncidentAnalyzer
+from chatops.router import route_message
+from pydantic import BaseModel
+from typing import Optional
+from fastapi.responses import HTMLResponse
+import pathlib
 
 app = FastAPI()
+
+@app.get("/chatops", response_class=HTMLResponse)
+async def chatops_page():
+    path = pathlib.Path("chatops/static/chatops.html")
+    if path.exists():
+        return HTMLResponse(path.read_text(encoding="utf-8"))
+    return HTMLResponse("<html><body><h1>ChatOps</h1></body></html>")
+
+
+class ChatMessage(BaseModel):
+    message: str
+
+
+class KundliRequest(BaseModel):
+    dob: str
+    time: str
+    place: str
+    gender: Optional[str] = None
+
+
+class IncidentRequest(BaseModel):
+    service: str
+    environment: str
+    logs: str
 
 
 @app.post("/analyze")
@@ -57,3 +88,22 @@ async def analyze_log(file: UploadFile = File(...)):
             os.remove(temp_path)
         except Exception:
             pass
+
+
+@app.post("/kundli/analyze")
+async def kundli_analyze(req: KundliRequest):
+    analyzer = KundliAnalyzer(req.dob, req.time, req.place, req.gender)
+    insights = analyzer.analyze()
+    return insights
+
+
+@app.post("/incident/analyze")
+async def incident_analyze(req: IncidentRequest):
+    analyzer = IncidentAnalyzer(req.service, req.environment, req.logs)
+    result = analyzer.analyze()
+    return result
+
+
+@app.post("/chatops/message")
+async def chatops_message(msg: ChatMessage):
+    return route_message(msg.message)

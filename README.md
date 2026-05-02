@@ -13,5 +13,14 @@ Run locally
 - Test quickly:
   - Use curl or a HTTP client to post a log file to http://localhost:8000/analyze
 
+Kundli Insight API (Phase 1 Prototype)
+- Endpoint: POST /kundli/analyze
+- Input: JSON body with dob, time, place, and optional gender
+- Output: JSON with placeholder insights: personality, career, challenges, guidance
+- Example:
+  curl -X POST http://localhost:8000/kundli/analyze \
+       -H 'Content-Type: application/json' \
+       -d '{"dob":"1990-01-01","time":"12:00","place":"New York","gender":"Male"}'
+
 Tests
 - Pytest tests/test_api.py validate the API behavior.

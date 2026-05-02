@@ -6,6 +6,7 @@ logs to the Incident Analyzer API. Prints results when severity is HIGH.
 """
 
 import time
+import argparse
 from typing import Optional
 import os
 import json
@@ -58,8 +59,35 @@ def main(log_path: str):
         time.sleep(30)
 
 
-if __name__ == "__main__":
-    import sys
-    path = sys.argv[1] if len(sys.argv) > 1 else "/var/log/syslog"
-    main(path)
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description="Monitor logs and triage incidents via /incident/analyze")
+    parser.add_argument("log_file", help="Path to the log file to monitor")
+    parser.add_argument("--api-url", dest="api_url", default="http://localhost:8001/incident/analyze", help="API URL to send logs to")
+    parser.add_argument("--interval", type=int, default=30, help="Polling interval in seconds")
+    parser.add_argument("--service", default="log-monitor", help="Service name for incident context")
+    parser.add_argument("--environment", default="prod", help="Environment name for incident context")
+    return parser.parse_args(argv)
 
+
+def run_once(log_path: str, last_pos: int, api_url: str, service: str, environment: str):
+    logs, new_pos = read_new_logs(log_path, last_pos)
+    if logs.strip():
+        result = analyze_logs_chunk(logs, service=service, environment=environment, api_url=api_url)
+        return result, new_pos
+    return None, new_pos
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    log_path = args.log_file
+    last_pos = 0
+    while True:
+        res, last_pos = run_once(log_path, last_pos, args.api_url, args.service, args.environment)
+        if isinstance(res, dict):
+            print("Incident analysis result:")
+            print(json.dumps(res, indent=2))
+            if res.get("severity") == "HIGH":
+                print("ALERT: HIGH severity detected from incident analyzer")
+        else:
+            print("No new logs in this interval.")
+        time.sleep(args.interval)

@@ -1,37 +1,25 @@
-#!/usr/bin/env python3
-"""
-Log Analyzer CLI entry point.
-Usage:
-  python log_analyzer.py <logfile>
-"""
-import sys
-import os
-import argparse
-
-from log_analyzer import LogAnalyzer
+from collections import Counter
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Log Analyzer CLI")
-    parser.add_argument("logfile", help="Path to log file to analyze")
-    parser.add_argument("-o", "--output", dest="output", default=None,
-                        help="Output report path (default: log_report.txt in same directory as logfile)")
-    args = parser.parse_args()
+class LogAnalyzer:
+    """A minimal log analyzer that counts occurrences of each log line and
+    extracts the top messages by frequency.
+    
+    This is a lightweight implementation intended to be used as the existing
+    LogAnalyzer in this project for the FastAPI service.
+    """
 
-    logfile = os.path.abspath(args.logfile)
-    if not os.path.isfile(logfile):
-        print(f"Error: logfile not found: {logfile}", file=sys.stderr)
-        sys.exit(2)
+    def analyze(self, lines):
+        # Normalize lines to strings and count occurrences
+        counts = {}
+        for line in lines:
+            counts[line] = counts.get(line, 0) + 1
 
-    if args.output:
-        output_path = args.output
-    else:
-        output_path = os.path.join(os.path.dirname(logfile), "log_report.txt")
+        # Top messages by frequency (best-effort, up to 3 items)
+        top_messages = [line for line, _ in Counter(lines).most_common(3)]
 
-    la = LogAnalyzer(path=logfile)
-    la.generate_report(report_path=output_path)
-    print(f"Report written to {output_path}")
+        return {
+            "counts": counts,
+            "top_messages": top_messages,
+        }
 
-
-if __name__ == "__main__":
-    main()
